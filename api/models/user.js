@@ -9,9 +9,34 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         allowNull: false,
       },
-      name: DataTypes.STRING(100),
-      email: DataTypes.STRING(100),
-      birth_date: DataTypes.DATE,
+      name: {
+        allowNull: false,
+        type:DataTypes.STRING(100),
+      },
+      email: {
+        allowNull: false,
+        type:DataTypes.STRING(100),
+      },
+      type: {
+        allowNull: false,
+        type:DataTypes.STRING(100),
+      },
+      birth_date: {
+        allowNull: false,
+        type:DataTypes.DATE,
+      },
+      password: {
+        allowNull: false,
+        type:DataTypes.STRING(100),
+      },
+      crated_at: {
+        allowNull: false,
+        type:DataTypes.DATE,
+      },
+      updated_at: {
+        allowNull: false,
+        type:DataTypes.DATE,
+      },
     },
     {
       paranoid: true,

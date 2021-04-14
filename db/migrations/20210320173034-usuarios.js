@@ -18,14 +18,30 @@ module.exports = {
         unique: true,
         type: Sequelize.STRING(100),
       },
+      type: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
       birth_date: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      password: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
+      crated_at: {
         type: Sequelize.DATE,
+        defaulValue: Sequelize.literal('NOW()')
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('NOW()')
       },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("users");
+    return queryInterface.dropTable("users");
   },
 };
