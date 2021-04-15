@@ -5,33 +5,59 @@ const authenticationCRTL = async (req, res, next) => {
    try {
       console.log(req.body);
 
-      const {user, password} = req.body;
+      const { user, password } = req.body;
 
-      const result = await userService.registeredUser(user, password);
+      const result = await userService.userFinder(user, password);
 
       if (!result) {
          return res.status(401).send({
-            message: `usuário ou senha inválidos`
+            message: `usuário ou senha inválidos.`
          });
       }
 
-      return res.status(200).send({
-         mensagem:"autenticado com sucesso",
-         token: 'huahuahuahua',
-      });
+      var credential = await userService.createCredential(user);
+
+      return res.status(200).send(credential);
       
    } catch (error) {
+      console.log(error);
       res.status(500).send({
          mensagem:"ERROR!!!",
       });
    }
 }
 
-module.exports = {
-   authenticationCRTL
+const createNewUserCTRL = async (req, res, next) => {
+   try{
+      //recebe o body do request
+      const { body } = req;
+      
+      //valida se email já existe
+      const emailValidation = await userService.isEmailRegistered(body.email);
+      
+      if (emailValidation){
+         return res.status(400).send({
+            mensagem: 'Email já cadastrado.',
+         });
+      }
+      await userService.createUser(body);
+      return res.status(200).send({
+         message:'cadastro realizado com sucesso!'
+      });
+
+   } catch (error) {
+      console.log(error);
+      res.status(500).send({
+         mensagem:"ERROR!!!",
+      });
+   }
 }
 
 
+module.exports = {
+   authenticationCRTL,
+   createNewUserCTRL,
+}
 
 
 

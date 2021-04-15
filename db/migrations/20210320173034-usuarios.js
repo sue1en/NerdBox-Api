@@ -30,14 +30,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.TEXT
       },
-      crated_at: {
-        type: Sequelize.DATE,
-        defaulValue: Sequelize.literal('NOW()')
-      },
-      updated_at: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('NOW()')
-      },
+      // crated_at: {
+      //   type: Sequelize.DATE,
+      //   defaulValue: Sequelize.literal('NOW()')
+      // },
+      // updated_at: {
+      //   type: Sequelize.DATE,
+      //   defaultValue: Sequelize.literal('NOW()')
+      // },
     });
   },
 

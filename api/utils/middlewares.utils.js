@@ -59,7 +59,5 @@ exports.autorizar = () => {
       });
 
     }
-
-    
   }
 }

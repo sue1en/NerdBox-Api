@@ -1,8 +1,8 @@
 const caixaCTRL = require('../../controllers/caixaCTRL');
-const { autorizar } = require('../../utils/middlewares.utils');
+const { autorizar, ValidateDTO } = require('../../utils/middlewares.utils');
+const Joi = require('joi');
 
-
-const { getAllBox, getBoxesById, postRegisterSubscription, deleteSubscription } = caixaCTRL
+const { getAllBox, createBox, getBoxesById, postRegisterSubscription, deleteSubscription } = caixaCTRL
 
 module.exports = (Router) => {
   Router
@@ -10,7 +10,16 @@ module.exports = (Router) => {
     .get(
       autorizar(),
       getAllBox,
-    );
+    )
+    .post(
+      autorizar(),
+      ValidateDTO('body', {
+        name: Joi.string().min(6).required(),
+        description:Joi.string().min(10).required(),
+        price: Joi.number().required(),
+      }),
+      createBox(),
+    )
   
   Router
     .route('/caixas/:id')

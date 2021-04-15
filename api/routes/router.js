@@ -10,7 +10,7 @@ const usersRouteV2 = require('./v2/users');
 
 module.exports = (appRouter) => {
    //HealthCheck
-   appRouter.get('/', (req,res, next) => {
+   appRouter.get('/', (req, res, next) => {
       res.send(`${name} - Version:${version}`)
    });
    
@@ -18,7 +18,6 @@ module.exports = (appRouter) => {
    // usersRouteV1(routerV1);
    // caixasRouteV1(routerV1);
    // appRouter.use('/v1', routerV1);
-   
    
    const routerV2 = Router();
    usersRouteV2(routerV2);

@@ -61,5 +61,11 @@ module.exports = {
       console.log(error);
       res.status(500).send({Error: "Erro interno do servidor."});
       }
-   }
+   },
+
+   createBox: async (req, res, next) => {
+      res.status(200).send({
+         message: 'Cadastro realizado com sucesso.'
+      })
+   },
 }
