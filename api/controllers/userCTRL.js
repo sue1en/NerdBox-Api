@@ -7,13 +7,15 @@ const authenticationCRTL = async (req, res, next) => {
 
       const {user, password} = req.body;
 
-      if (!userService.registeredUser(user, password)) {
-         res.status(401).send({
+      const result = await userService.registeredUser(user, password);
+
+      if (!result) {
+         return res.status(401).send({
             message: `usuário ou senha inválidos`
          });
       }
 
-      res.status(200).send({
+      return res.status(200).send({
          mensagem:"autenticado com sucesso",
          token: 'huahuahuahua',
       });
@@ -28,9 +30,6 @@ const authenticationCRTL = async (req, res, next) => {
 module.exports = {
    authenticationCRTL
 }
-
-
-
 
 
 
