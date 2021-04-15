@@ -18,8 +18,8 @@ module.exports = (Router) => {
         description:Joi.string().min(10).required(),
         price: Joi.number().required(),
       }),
-      createBox(),
-    )
+      createBox,
+    );
   
   Router
     .route('/caixas/:id')

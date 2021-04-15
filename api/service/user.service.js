@@ -8,6 +8,16 @@ const createHash = (password) => {
   return md5(password + hashSecret);
 };
 
+//verifica se email já existe
+const searchByEmail = async (email) => {
+  return userFromDB = user.findOne({
+    where: {
+      email: email,
+    },
+  });
+};
+
+
 //locoliza usuário por email e senha
 const userFinder = (userEmail, password) => {
   const userFromDB = user.findOne({
@@ -17,19 +27,19 @@ const userFinder = (userEmail, password) => {
     },
   });
   return userFromDB ? true : false;
-
+  
 };
 
 const createCredential = async (userEmail) => {
- 
-  const user = await user.findOne({
+  
+  const userCredential = await user.findOne({
     where: {
       email: userEmail
     },
   });
-
-  const { name, email, type } = user;
-
+  
+  const { name, email, type } = userCredential;
+  
   try{
     const credential = {
       token: jwt.sign({ email: user.email}, process.envJWT_KEY, {
@@ -42,20 +52,12 @@ const createCredential = async (userEmail) => {
       }
     }
     return credential;
-
+    
   } catch (error) {
     console.log(error);
   };
 };
 
-//verifica se email já está cadastrado
-const searchByEmail = async (email) => {
-  return userFromDB = user.findOne({
-    where: {
-      email: email,
-    },
-  });
-};
 
 const isEmailRegistered = async (email) => {
   const result = await searchByEmail(email);

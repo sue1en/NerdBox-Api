@@ -51,7 +51,7 @@ module.exports = (Router) => {
         }),
       }),
 
-      // userCTRL.createUser
+      userCTRL.createNewUserCTRL
     );
 
 }

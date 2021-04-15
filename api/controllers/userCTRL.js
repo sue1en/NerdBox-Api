@@ -34,7 +34,6 @@ const createNewUserCTRL = async (req, res, next) => {
       
       //valida se email já existe
       const emailValidation = await userService.isEmailRegistered(body.email);
-      
       if (emailValidation){
          return res.status(400).send({
             mensagem: 'Email já cadastrado.',
@@ -42,7 +41,7 @@ const createNewUserCTRL = async (req, res, next) => {
       }
       await userService.createUser(body);
       return res.status(200).send({
-         message:'cadastro realizado com sucesso!'
+         mensagem:'cadastro realizado com sucesso!'
       });
 
    } catch (error) {
