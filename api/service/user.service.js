@@ -2,7 +2,8 @@ const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 const hashSecret = process.env.CRYPTO_KEY;
 
-const { user } = require('../models');
+const { users } = require('../models');
+console.log(users);
 
 const createHash = (password) => {
   return md5(password + hashSecret);
@@ -10,7 +11,7 @@ const createHash = (password) => {
 
 //verifica se email já existe
 const searchByEmail = async (email) => {
-  return userFromDB = user.findOne({
+  return userFromDB = users.findOne({
     where: {
       email: email,
     },
@@ -20,10 +21,10 @@ const searchByEmail = async (email) => {
 
 //locoliza usuário por email e senha
 const userFinder = (userEmail, password) => {
-  const userFromDB = user.findOne({
+  const userFromDB = users.findOne({
     where: {
       email: userEmail,
-      password: md5(password + hashSecret),
+      password: createHash(password),
     },
   });
   return userFromDB ? true : false;
@@ -32,7 +33,7 @@ const userFinder = (userEmail, password) => {
 
 const createCredential = async (userEmail) => {
   
-  const userCredential = await user.findOne({
+  const userCredential = await users.findOne({
     where: {
       email: userEmail
     },
@@ -42,7 +43,7 @@ const createCredential = async (userEmail) => {
   
   try{
     const credential = {
-      token: jwt.sign({ email: user.email}, process.envJWT_KEY, {
+      token: jwt.sign({ email: users.email}, process.env.JWT_KEY, {
         expiresIn: `${process.env.JWT_VALID_TIME}ms`,
       }),
       user: {
@@ -65,16 +66,16 @@ const isEmailRegistered = async (email) => {
 };
 
 //Cria novo usuário
-const createUser = (model) => {
+const createUser = (body) => {
   const registerModel = {
-    name:body.name,
+    name: body.name,
     email: body.email,
     birth_date: body.birth_date,
     type:'2',
     password: createHash(body.password),
   };
 
-  return user.create(registerModel);
+  return users.create(registerModel);
 };
 
 module.exports = { 

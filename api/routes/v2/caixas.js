@@ -8,7 +8,6 @@ module.exports = (Router) => {
   Router
     .route('/caixas')
     .get(
-      autorizar(),
       getAllBox,
     )
     .post(
