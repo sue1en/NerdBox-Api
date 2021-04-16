@@ -42,9 +42,9 @@ exports.autorizar = () => {
     const { token } = req.headers;
 
     try{
-      if (token) {
+      if (!token) {
         return res.status(401).send({
-          message: "token inválido."
+          message: "usuário não autorizado."
         });
       }
 

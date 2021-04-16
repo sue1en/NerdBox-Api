@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const hashSecret = process.env.CRYPTO_KEY;
 
 const { users } = require('../models');
-console.log(users);
 
 const createHash = (password) => {
   return md5(password + hashSecret);
@@ -17,7 +16,6 @@ const searchByEmail = async (email) => {
     },
   });
 };
-
 
 //locoliza usuário por email e senha
 const userFinder = (userEmail, password) => {
