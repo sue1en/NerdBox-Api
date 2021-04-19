@@ -8,11 +8,13 @@ module.exports = (Router) => {
     .route('/auth')
     .post(
       ValidateDTO('body', {
-        password:Joi.string().required().messages({
-          'any-required': `"senha" é um campo obrigatório`
-        }),
         user: Joi.string().required().messages({
-          'any-required': `"usuário" é um campo obrigatório`
+          'any-required': `"usuário" é um campo obrigatório`,
+          'string.empty': `"usuario" não deve ser vazio`,
+        }),
+        password:Joi.string().required().messages({
+          'any-required': `"senha" é um campo obrigatório`,
+          'string.empty': `"senha" não deve ser vazio`,
         }),
       }),
       userCTRL.authenticationCRTL

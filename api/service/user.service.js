@@ -18,28 +18,28 @@ const searchByEmail = async (email) => {
 };
 
 //locoliza usuário por email e senha
-const userFinder = (userEmail, password) => {
-  const userFromDB = users.findOne({
+const userFinder = async (userEmail, password) => {
+  const userFromDB = await users.findOne({
     where: {
       email: userEmail,
       password: createHash(password),
     },
   });
+  console.log(userFromDB);
   return userFromDB ? true : false;
-  
 };
 
-const createCredential = async (userEmail) => {
-  
-  const userCredential = await users.findOne({
-    where: {
-      email: userEmail
-    },
-  });
-  
-  const { name, email, type } = userCredential;
+const createCredential = async (userEmail, password) => {
   
   try{
+    const userCredential = await users.findOne({
+      where: {
+        email: userEmail,
+      },
+    });
+  
+    const { name, email, type } = userCredential;
+  
     const credential = {
       token: jwt.sign({ email: users.email}, process.env.JWT_KEY, {
         expiresIn: `${process.env.JWT_VALID_TIME}ms`,

@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
+const userService = require('../service/user.service');
 
 
 const criateDetail = (error) => {
@@ -36,7 +37,7 @@ exports.ValidateDTO = (type, params) => {
 }
 
 exports.autorizar = () => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     console.log(req.header);
 
     const { token } = req.headers;
@@ -49,6 +50,9 @@ exports.autorizar = () => {
       }
 
       const userJWT = jwt.verify(token, process.env.JWT_KEY);
+
+      const user = await userService.userFinder(userJWT.email);
+      req.user = user;
 
     } catch (error) {
 

@@ -40,4 +40,4 @@ module.exports = (Router) => {
       autorizar(),
       deleteSubscription,
     );
-}
+};
