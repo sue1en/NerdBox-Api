@@ -23,7 +23,6 @@ module.exports = (Router) => {
   Router
     .route('/caixas/:id')
     .get(
-      autorizar(),
       getBoxesById
     );
   

@@ -3,6 +3,17 @@ const jwt = require('jsonwebtoken');
 const userService = require('../service/user.service');
 
 
+const profiles = {
+  '1': [
+    'CREATE_BOX',
+    'EDIT_BOX'
+  ],
+  '2': [
+    'EDIT_USER',
+  ]
+}
+
+
 const criateDetail = (error) => {
 
   return error.details.reduce((acc, item) => {
@@ -22,37 +33,56 @@ exports.ValidateDTO = (type, params) => {
 //DTO - data transfer model
   return (req, res, next) => {
 
-    const schema = Joi.object().keys(params);
+    try {
+      const schema = Joi.object().keys(params);
+    
+      const { value, error } = schema.validate(req[type], {
+        allowUnknown: false,
+      });
+    
+      req[type] = value;
+
+      return error ? res.status(422).send({
+        details: [...criateDetail(error)],
+      }) : next();
+
+    } catch (error) {
+      console.log(error);
+    }
   
-    const { value, error } = schema.validate(req[type], {
-      allowUnknown: false,
-    });
-  
-    req[type] = value;
-  
-    return error ? res.status(422).send({
-      details: [...criateDetail(error)],
-    }) : next();
   }
 }
 
-exports.autorizar = () => {
+
+exports.autorizar = (bacon = '*') => {
   return async (req, res, next) => {
-    console.log(req.header);
-
+    
     const { token } = req.headers;
-
+    console.log(token);
+    
     try{
       if (!token) {
-        return res.status(401).send({
+        return res.status(403).send({
           message: "usuário não autorizado."
         });
       }
 
       const userJWT = jwt.verify(token, process.env.JWT_KEY);
+      
 
-      const user = await userService.userFinder(userJWT.email);
+      const user = await userService.searchByEmail(userJWT.email);
       req.user = user;
+
+      if (bacon !== '*'){
+        if(!profiles[user.type].includes(bacon))
+        {
+          return res.status(403).send({
+          message: "Usuário não autorizado."
+          });
+        }
+      }
+
+      next();
 
     } catch (error) {
 

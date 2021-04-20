@@ -10,11 +10,12 @@ const createHash = (password) => {
 
 //verifica se email já existe
 const searchByEmail = async (email) => {
-  return userFromDB = users.findOne({
+  const userFromDB = await users.findOne({
     where: {
       email: email,
     },
   });
+  return userFromDB.dataValues;
 };
 
 //locoliza usuário por email e senha
@@ -29,7 +30,8 @@ const userFinder = async (userEmail, password) => {
   return userFromDB ? true : false;
 };
 
-const createCredential = async (userEmail, password) => {
+
+const createCredential = async (userEmail) => {
   
   try{
     const userCredential = await users.findOne({
@@ -41,7 +43,7 @@ const createCredential = async (userEmail, password) => {
     const { name, email, type } = userCredential;
   
     const credential = {
-      token: jwt.sign({ email: users.email}, process.env.JWT_KEY, {
+      token: jwt.sign({ email: email}, process.env.JWT_KEY, {
         expiresIn: `${process.env.JWT_VALID_TIME}ms`,
       }),
       user: {
@@ -58,9 +60,22 @@ const createCredential = async (userEmail, password) => {
 };
 
 
-const isEmailRegistered = async (email) => {
+const isEmailRegistered = async (email, id = 0) => {
   const result = await searchByEmail(email);
-  return result ? true : false;
+
+  if(id === 0) {
+    return result ? true : false;
+  }
+
+  if (result) {
+    if (result.id === id)
+      return false;
+    return true;
+
+  } else {
+    return false;
+
+  }
 };
 
 //Cria novo usuário
@@ -76,9 +91,25 @@ const createUser = (body) => {
   return users.create(registerModel);
 };
 
+const editUser = async (id, body) => {
+  return await users.update(
+    {
+      name: body.name,
+      email: body.email,
+      birth_date: body.birth_date,
+    },
+    {
+      where: { id:id }
+    }
+  )
+}
+
+
 module.exports = { 
   userFinder,
   createCredential,
   isEmailRegistered,
   createUser,
+  searchByEmail,
+  editUser
 };
