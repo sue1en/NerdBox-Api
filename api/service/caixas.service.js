@@ -14,16 +14,12 @@ const searchBoxByName = async (name) => {
 //   return result ? true : false;
 // };
 
-const createNewBox = async (id, body) => {
-    return caixas.create({
+const createNewBox = async (body) => {
+    return await caixas.create({
       name: body.name,
       description: body.description,
       price: body.price,
-
-    },
-    {where: { id:id }}
-  
-    );
+    });
     
 };
   
@@ -31,26 +27,27 @@ const createNewBox = async (id, body) => {
 // console.log(createNewBox);
 // console.log("###########");
 
-// const editBox = async (id, body) => {
-//   const editBoxModel = {
-//     name: body.name,
-//     description: body.description,
-//     price: body.price,
-//   };
-//   console.log("###########");
-//   console.log(editBoxModel);
-//   console.log("###########");
+const editBox = async (id, body) => {
+  const editBoxModel = {
+    name: body.name,
+    description: body.description,
+    price: body.price,
+  };
   
-//   return caixas.update(
-//     {...editBoxModel},
-//     // {where: { id:id }}
-//   );
+  // console.log("###########");
+  // console.log(editBoxModel);
+  // console.log("###########");
+  
+  return caixas.update(
+    {...editBoxModel},
+    {where: { id:id }}
+  );
 
-// };
+};
 
 
 module.exports = {
   searchBoxByName,
   createNewBox,
-  // editBox,
+  editBox,
 }

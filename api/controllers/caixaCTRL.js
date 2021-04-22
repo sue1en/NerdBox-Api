@@ -1,5 +1,7 @@
 const caixasSevice = require('../service/caixas.service');
 const { caixas } = require('../models');
+const { users } = require('../models');
+const { userCaixas } = require('../models');
 
 module.exports = {
 
@@ -18,17 +20,18 @@ module.exports = {
    },
 
    getBoxesByIdCTRL: async (req, res) => {
+      const { idCaixa } = req.params
       const findBoxById =  await caixas.findOne({
          where: {
-            id: req.params.id
+            id: idCaixa
          },
-         // include: {
-         //    model: userCaixas,
-         //    as: 'assinantes',
-         //    include: {
-         //       model: users
-         //    }
-         // }
+         include: {
+            model: userCaixas,
+            as: 'assinantes',
+            include: {
+               model: users
+            }
+         }
       });
       if(!findBoxById) {
          return res.status(400).send({Error: "Não existe uma Box com esse ID"})
@@ -52,6 +55,7 @@ module.exports = {
    },
    deleteSubscriptionCTRL: async (req, res) => {
       try {
+         
          await userCaixas.destroy({
             where: {
                id: req.params.id
@@ -66,8 +70,15 @@ module.exports = {
 
    createBoxCTRL: async (req, res, next) => {
       try{
+
+         if ( req.user.type !== "1" ) {
+            return res.status(401).send({
+               message: 'Usuário não autorizado.'
+            })
+         };
+         
          const { name } = req.body;
-   
+
          //verifica se produto já é cadastrado com esse nome
          const boxNameValidation = await caixasSevice.searchBoxByName(name);
          if (boxNameValidation){
@@ -87,33 +98,40 @@ module.exports = {
             message:"ERROR!!!",
          });
       }
-   
    },
 
 
-   // editBoxCTRL: async (req, res, next) => {
-   //    try{
-   //       const { name } = req.body;
-   
-   //       //verifica se produto já é cadastrado com esse nome
-   //       const boxNameValidation = await caixasSevice.searchBoxByName(name);
-   //       if (boxNameValidation){
-   //          return res.status(400).send({
-   //             message: 'Já existe uma caixa com esse nome.'
-   //          })
-   //       }
-   
-   //       await caixasSevice.createNewBox(req.body);
-   //       return res.status(200).send({
-   //          message:'Cadastro realizado com sucesso.'
-   //       });
+   editBoxCTRL: async (req, res, next) => {
+      try{
 
-   //    } catch (error) {
-   //       console.log(error);
-   //       res.status(500).send({
-   //          message:"ERROR!!!",
-   //       });
-   //    }
-   // },
+         if ( req.user.type !== "1" ) {
+            return res.status(401).send({
+               message: 'Usuário não autorizado.'
+            })
+         };
+
+         const { idCaixa } = req.params;
+         
+         //verifica se produto já é cadastrado com esse nome
+         const boxNameValidation = await caixasSevice.searchBoxByName(idCaixa, req.body);
+
+         if (boxNameValidation){
+            return res.status(400).send({
+               message: 'Já existe uma caixa com esse nome.'
+            })
+         }
+   
+         await caixasSevice.editBox(idCaixa, req.body);
+         return res.status(200).send({
+            message:'Atualização realizada com sucesso.'
+         });
+
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({
+            message:"ERROR!!!",
+         });
+      }
+   },
 
 }
