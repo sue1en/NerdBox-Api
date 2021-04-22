@@ -1,8 +1,9 @@
-const { caixas, users, userCaixas} = require('../models');
+const caixasSevice = require('../service/caixas.service');
+const { caixas } = require('../models');
 
 module.exports = {
 
-   getAllBox: async (req, res) => {
+   getAllBoxCTRL: async (req, res) => {
       const existentsBox = await caixas.findAll({})
 
       res.status(200).send(existentsBox.map(item => {
@@ -16,25 +17,25 @@ module.exports = {
       }) || []);
    },
 
-   getBoxesById: async (req, res) => {
+   getBoxesByIdCTRL: async (req, res) => {
       const findBoxById =  await caixas.findOne({
          where: {
             id: req.params.id
          },
-         include: {
-            model: userCaixas,
-            as: 'assinantes',
-            include: {
-               model: users
-            }
-         }
+         // include: {
+         //    model: userCaixas,
+         //    as: 'assinantes',
+         //    include: {
+         //       model: users
+         //    }
+         // }
       });
       if(!findBoxById) {
          return res.status(400).send({Error: "Não existe uma Box com esse ID"})
       }
       res.status(200).send(findBoxById)
    },
-   postRegisterSubscription: async (req, res) => {
+   postRegisterSubscriptionCTRL: async (req, res) => {
       const { idCaixa } = req.params
       const { email } = req.body
 
@@ -49,7 +50,7 @@ module.exports = {
       const subsNewUser = await userCaixas.create({id_user: findExistentUser.id, id_caixa: idCaixa })
       return res.status(200).send({Sucesso: "Assinado com sucesso!"})
    },
-   deleteSubscription: async (req, res) => {
+   deleteSubscriptionCTRL: async (req, res) => {
       try {
          await userCaixas.destroy({
             where: {
@@ -63,9 +64,56 @@ module.exports = {
       }
    },
 
-   createBox: async (req, res, next) => {
-      res.status(200).send({
-         message: 'Cadastro realizado com sucesso.'
-      })
+   createBoxCTRL: async (req, res, next) => {
+      try{
+         const { name } = req.body;
+   
+         //verifica se produto já é cadastrado com esse nome
+         const boxNameValidation = await caixasSevice.searchBoxByName(name);
+         if (boxNameValidation){
+            return res.status(400).send({
+               message: 'Já existe uma caixa com esse nome.'
+            })
+         }
+   
+         await caixasSevice.createNewBox(req.body);
+         return res.status(200).send({
+            message:'Cadastro realizado com sucesso.'
+         });
+
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({
+            message:"ERROR!!!",
+         });
+      }
+   
    },
+
+
+   // editBoxCTRL: async (req, res, next) => {
+   //    try{
+   //       const { name } = req.body;
+   
+   //       //verifica se produto já é cadastrado com esse nome
+   //       const boxNameValidation = await caixasSevice.searchBoxByName(name);
+   //       if (boxNameValidation){
+   //          return res.status(400).send({
+   //             message: 'Já existe uma caixa com esse nome.'
+   //          })
+   //       }
+   
+   //       await caixasSevice.createNewBox(req.body);
+   //       return res.status(200).send({
+   //          message:'Cadastro realizado com sucesso.'
+   //       });
+
+   //    } catch (error) {
+   //       console.log(error);
+   //       res.status(500).send({
+   //          message:"ERROR!!!",
+   //       });
+   //    }
+   // },
+
 }

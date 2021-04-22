@@ -1,9 +1,9 @@
 const { caixas } = require('../models');
 
-const searchBoxByName = async (boxName) => {
+const searchBoxByName = async (name) => {
   var boxFromDB = await caixas.findOne({
     where: {
-      name: boxName,
+      name: name,
     },
   });
   return boxFromDB ? true : false;
@@ -14,17 +14,43 @@ const searchBoxByName = async (boxName) => {
 //   return result ? true : false;
 // };
 
-const crateNewBox = async (body) => {
-  return caixas.create({
+const createNewBox = async (id, body) => {
+    return caixas.create({
       name: body.name,
       description: body.description,
       price: body.price,
-    });
-};
 
+    },
+    {where: { id:id }}
+  
+    );
+    
+};
+  
+// console.log("###########");
+// console.log(createNewBox);
+// console.log("###########");
+
+// const editBox = async (id, body) => {
+//   const editBoxModel = {
+//     name: body.name,
+//     description: body.description,
+//     price: body.price,
+//   };
+//   console.log("###########");
+//   console.log(editBoxModel);
+//   console.log("###########");
+  
+//   return caixas.update(
+//     {...editBoxModel},
+//     // {where: { id:id }}
+//   );
+
+// };
 
 
 module.exports = {
   searchBoxByName,
-  crateNewBox
+  createNewBox,
+  // editBox,
 }

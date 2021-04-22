@@ -1,87 +1,83 @@
 const userService = require('../service/user.service');
 
-const authenticationCRTL = async (req, res) => {
-
-   try {
-      console.log(req.body);
-
-      const { user, password } = req.body;
-
-      const result = await userService.userFinder(user, password);
-
-      if (!result) {
-         return res.status(401).send({
-            message: `usuário ou senha inválidos.`
-         });
-      }
-
-      var credential = await userService.createCredential(user);
-
-      return res.status(200).send(credential);
-      
-   } catch (error) {
-      console.log(error);
-      res.status(500).send({
-         message:"ERROR!!!",
-      });
-   }
-}
-
-const createNewUserCTRL = async (req, res) => {
-   try{
-      //recebe o body do request
-      const { body } = req;
-      
-      //valida se email já existe
-      const emailValidation = await userService.isEmailRegistered(body.email);
-      if (emailValidation){
-         return res.status(400).send({
-            message: 'Email já cadastrado.',
-         });
-      }
-      await userService.createUser(body);
-      return res.status(200).send({
-         message:'cadastro realizado com sucesso!'
-      });
-
-   } catch (error) {
-      console.log(error);
-      res.status(500).send({
-         message:"ERROR!!!",
-      });
-   }
-}
-
-const editUserCTRL = async (req, res) => {
-   
-   const { body, params } = req;
-   
-   if (Number(params.id) !== Number(req.user.id)) {
-      return res.status(400).send({
-         message: `Operação não permitida.`
-      })
-   }
-
-   //valida se email já existe
-   const emailValidation = await userService.isEmailRegistered(body.email, params.id);
-   if (emailValidation) {
-      return res.send(400).send({
-         message: `email já cadastrado.`
-      })
-   }
-
-   await userService.editUser(params.id, body);
-
-   return res.status(200).send({
-      message:'Alteração realizada com sucesso.'
-   })
-}
-
-
 module.exports = {
-   authenticationCRTL,
-   createNewUserCTRL,
-   editUserCTRL
+   authenticationCRTL: async (req, res) => {
+   
+      try {
+         console.log(req.body);
+   
+         const { user, password } = req.body;
+   
+         const result = await userService.userFinder(user, password);
+   
+         if (!result) {
+            return res.status(401).send({
+               message: `usuário ou senha inválidos.`
+            });
+         }
+   
+         var credential = await userService.createCredential(user);
+   
+         return res.status(200).send(credential);
+         
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({
+            message:"ERROR!!!",
+         });
+      }
+   },
+   
+   createNewUserCTRL: async (req, res) => {
+      try{
+         //recebe o body do request
+         const { body } = req;
+         
+         //valida se email já existe
+         const emailValidation = await userService.isEmailRegistered(body.email);
+         if (emailValidation){
+            return res.status(400).send({
+               message: 'Email já cadastrado.',
+            });
+         }
+         await userService.createUser(body);
+         return res.status(200).send({
+            message:'cadastro realizado com sucesso!'
+         });
+   
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({
+            message:"ERROR!!!",
+         });
+      }
+   },
+   
+   editUserCTRL: async (req, res) => {
+      
+      const { body, params } = req;
+      
+      if (Number(params.id) !== Number(req.user.id)) {
+         return res.status(400).send({
+            message: `Operação não permitida.`
+         })
+      }
+   
+      //valida se email já existe
+      const emailValidation = await userService.isEmailRegistered(body.email, params.id);
+      if (emailValidation) {
+         return res.send(400).send({
+            message: `email já cadastrado.`
+         })
+      }
+   
+      await userService.editUser(params.id, body);
+   
+      return res.status(200).send({
+         message:'Alteração realizada com sucesso.'
+      })
+   },
+
 }
 
 
