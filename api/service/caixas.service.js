@@ -7,7 +7,7 @@ const searchBoxByName = async (name) => {
   return resultFromDB ? true : false;
 };
 
-const findBoxById = async (id) =>{
+const findBoxByIdNoAuth = async (id) =>{
   return await caixas.findOne({
     where: { id: id }
   });
@@ -22,8 +22,8 @@ const findBoxByUserProfile = async (id, userId, userType) => {
       include: [{
         model: users,
         as: 'user',
-      }]
-    }]
+      }],
+    }],
   });
 
   let subscriptionFilter = resultFromDB.assinantes;
@@ -35,21 +35,18 @@ const findBoxByUserProfile = async (id, userId, userType) => {
         member: {
           id: itemSubscription.user.id,
           name: itemSubscription.user.name,
-        }
-      }
+        },
+      };
     });
-
     result = {
       qtd_subs: subscriptionFilter.length,
       assinantes: subscriptionDetail,
-    }
-  };
-  
-  if (Number(userType) === 2) {
+    };
+  } else {
     const memberDatail = subscriptionFilter.filter((itemFilter) => (Number(itemFilter.id_user) === Number(userId)));
     result = {
       membro: memberDatail.length ? true : false,
-    }
+    };
   };
 
   return {
@@ -58,7 +55,7 @@ const findBoxByUserProfile = async (id, userId, userType) => {
     description: resultFromDB.description,
     price: resultFromDB.price,
     result
-  }
+  };
 };
 
 const createNewBox = async (body) => {
@@ -87,5 +84,5 @@ module.exports = {
   createNewBox,
   editBox,
   findBoxByUserProfile,
-  findBoxById
-}
+  findBoxByIdNoAuth,
+};

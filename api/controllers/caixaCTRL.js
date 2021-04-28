@@ -23,6 +23,18 @@ module.exports = {
       }
    },
 
+   getBoxesByIdNoAuthCTRL: async (req, res) => {
+      try{ 
+         const { params } = req
+         const result = await caixasSevice.findBoxByIdNoAuth(params.idCaixa)
+         return res.status(200).send(result);
+
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({message:"ERROR!!!" });
+      }
+   },
+
    getBoxesByIdCTRL: async (req, res) => { 
       try{
          const { params, user } = req

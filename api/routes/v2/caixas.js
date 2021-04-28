@@ -2,7 +2,7 @@ const caixaCTRL = require('../../controllers/caixaCTRL');
 const { autorizar, ValidateDTO } = require('../../utils/middlewares.utils');
 const Joi = require('joi');
 
-const { getAllBoxCTRL, createBoxCTRL, getBoxesByIdCTRL, postRegisterSubscriptionCTRL, deleteSubscriptionCTRL, editBoxCTRL } = caixaCTRL
+const { getAllBoxCTRL, createBoxCTRL, getBoxesByIdNoAuthCTRL, getBoxesByIdCTRL, postRegisterSubscriptionCTRL, deleteSubscriptionCTRL, editBoxCTRL } = caixaCTRL
 
 module.exports = (Router) => {
 
@@ -11,6 +11,13 @@ module.exports = (Router) => {
     .route('/caixas')
     .get(
       getAllBoxCTRL,
+    );
+
+  //Retorna caixa por id não autenticado
+  Router
+    .route('/caixas-noauth/:idCaixa')
+    .get(
+      getBoxesByIdNoAuthCTRL,
     );
     
   //Retorna caixa por id (apenas para quem está logado)

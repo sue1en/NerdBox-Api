@@ -34,7 +34,6 @@ const criateDetail = (error) => {
 exports.ValidateDTO = (type, params) => {
 //DTO - data transfer model
   return (req, res, next) => {
-
     try {
       const schema = Joi.object().keys(params);
     
@@ -50,11 +49,9 @@ exports.ValidateDTO = (type, params) => {
 
     } catch (error) {
       console.log(error);
-    }
-  
-  }
-}
-
+    };
+  };
+};
 
 exports.autorizar = (bacon = '*') => {
   return async (req, res, next) => {
@@ -67,10 +64,9 @@ exports.autorizar = (bacon = '*') => {
         return res.status(403).send({
           message: "usuário não autorizado."
         });
-      }
+      };
 
       const userJWT = jwt.verify(token, process.env.JWT_KEY);
-      
 
       const user = await userService.searchByEmail(userJWT.email);
       req.user = user;
@@ -81,8 +77,8 @@ exports.autorizar = (bacon = '*') => {
           return res.status(403).send({
           message: "Usuário não autorizado."
           });
-        }
-      }
+        };
+      };
 
       next();
 
@@ -94,6 +90,6 @@ exports.autorizar = (bacon = '*') => {
         message: "usuário não autenticado!"
       });
 
-    }
-  }
-}
+    };
+  };
+};
