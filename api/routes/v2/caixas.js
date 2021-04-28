@@ -4,6 +4,9 @@ const Joi = require('joi');
 
 const { getAllBoxCTRL, createBoxCTRL, getBoxesByIdNoAuthCTRL, getBoxesByIdCTRL, postRegisterSubscriptionCTRL, deleteSubscriptionCTRL, editBoxCTRL } = caixaCTRL
 
+const testeCTRL = require('../../controllers/testeCTRL')
+const { rotaTeste } = testeCTRL
+
 module.exports = (Router) => {
 
   //Retorna caixas existentes
@@ -105,9 +108,10 @@ module.exports = (Router) => {
     );
   
   Router
-    .route('/caixas/delete/:id')
+    .route('/caixas/:idCaixa/assinar/:idSubscription')
     .delete(
       autorizar(),
-      deleteSubscriptionCTRL,
+      rotaTeste
+      //deleteSubscriptionCTRL,
     );
 };

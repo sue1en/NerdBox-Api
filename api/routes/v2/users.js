@@ -31,7 +31,6 @@ module.exports = (Router) => {
       autorizar("GET_ALL_USERS"),
       getAllUsers
     )
-
     .post(
       ValidateDTO('body', {
         name: Joi.string().min(5).max(30).required()
@@ -100,12 +99,4 @@ module.exports = (Router) => {
       }),
       editUserCTRL
     );
-    
-  }
-      
-      
-// const { getAllUsers, postRegisterUser} = userCTRL   
-//     Router
-//         .route('/register/:idCaixa')
-//         .post(postRegisterUser)
-// }
+  };

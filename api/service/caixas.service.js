@@ -1,4 +1,4 @@
-const { caixas, userCaixas, users, Sequelize } = require('../models');
+const { caixas, userCaixas, users } = require('../models');
 
 const searchBoxByName = async (name) => {
   var resultFromDB = await caixas.findOne({

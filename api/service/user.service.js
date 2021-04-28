@@ -52,8 +52,8 @@ const createCredential = async (userEmail) => {
         email,
         birth_date,
         type,
-      }
-    }
+      },
+    };
     return credential;
     
   } catch (error) {
@@ -61,23 +61,20 @@ const createCredential = async (userEmail) => {
   };
 };
 
-
 const isEmailRegistered = async (email, id = 0) => {
   const result = await searchByEmail(email);
 
   if(id === 0) {
     return result ? true : false;
-  }
+  };
 
   if (result) {
     if (result.id === id)
       return false;
     return true;
-
   } else {
     return false;
-
-  }
+  };
 };
 
 //Cria novo usuário
@@ -89,7 +86,6 @@ const createUser = (body) => {
     type:'2',
     password: createHash(body.password),
   };
-
   return users.create(registerModel);
 };
 
@@ -102,10 +98,9 @@ const editUser = async (id, body) => {
     },
     {
       where: { id:id }
-    }
-  )
-}
-
+    },
+  );
+};
 
 module.exports = { 
   userFinder,

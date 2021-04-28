@@ -1,6 +1,5 @@
 const userService = require('../service/user.service');
-const { users, userCaixas } = require('../models')
-
+const { users } = require('../models')
 
 module.exports = {
    authenticationCRTL: async (req, res) => {
