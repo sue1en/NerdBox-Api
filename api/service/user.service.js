@@ -15,7 +15,7 @@ const searchByEmail = async (email) => {
       email: email,
     },
   });
-  return userFromDB.dataValues;
+  return userFromDB;
 };
 
 //locoliza usuário por email e senha
@@ -40,15 +40,17 @@ const createCredential = async (userEmail) => {
       },
     });
   
-    const { name, email, type } = userCredential;
+    const { id, name, email, birth_date, type } = userCredential;
   
     const credential = {
       token: jwt.sign({ email: email}, process.env.JWT_KEY, {
         expiresIn: `${process.env.JWT_VALID_TIME}ms`,
       }),
       user: {
+        id,
         name,
         email,
+        birth_date,
         type,
       }
     }

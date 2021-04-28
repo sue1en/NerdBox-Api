@@ -12,40 +12,23 @@ module.exports = (Router) => {
     .get(
       getAllBoxCTRL,
     );
-  
-  //Cria nova caixa
-  Router
-    .route('/novacaixa')
-    .post(
-      autorizar("CREATE_BOX"),
-      ValidateDTO('body', {
-        name: Joi.string().required()
-          .messages({
-            'eny.required': `"nome" é um campo obrigatório.`,
-            'string.empty': `"nome" não deve ser vazio.`,
-          }),
-        description:Joi.string().min(10).required()
-          .messages({
-            'eny.required': `"description" é um campo obrigatório.`,
-            'string.empty': `"description" não deve ser vazio.`
-          }),
-        price: Joi.number().required()
-          .messages({
-          'eny.required': `"price" é um campo obrigatório.`,
-          'string.empty': `"price" não deve ser vazio.`,
-          'number.base': `"price" deve ser um número`,
-          }),
-      }),
-      createBoxCTRL,
-    );
-  
+    
+  //Retorna caixa por id (apenas para quem está logado)
   Router
     .route('/caixas/:idCaixa')
     .get(
+      autorizar(),
+      ValidateDTO('params', {
+        idCaixa: Joi.number().integer().required().messages({
+          'any.required': `"id" é um campo obrigatório`,
+          'number.base': `"id" deve ser um número`,
+          'number.integer': `"id" deve ser um número válido`,
+        })   
+      }),
       getBoxesByIdCTRL
     );
 
-  //edita caixa
+  //Edita caixa existente (apenas usuário tipo 1)
   Router
     .route('/caixas/:idCaixa')
     .put(
@@ -60,17 +43,43 @@ module.exports = (Router) => {
       }),
       ValidateDTO('body', {
         name: Joi.string().required()
+        .messages({
+          'eny.required': `"nome" é um campo obrigatório.`,
+          'string.empty': `"nome" não deve ser vazio.`,
+        }),
+        
+        description:Joi.string().min(10).required()
+        .messages({
+          'eny.required': `"description" é um campo obrigatório.`,
+          'string.empty': `"description" não deve ser vazio.`,       
+        }),
+        
+        price: Joi.number().required()
+        .messages({
+          'eny.required': `"price" é um campo obrigatório.`,
+          'string.empty': `"price" não deve ser vazio.`,
+          'number.base': `"price" deve ser um número`,
+        }),
+      }),
+      editBoxCTRL,
+    );
+
+  //Cria nova caixa (apenas usuário tipo 1)
+  Router
+    .route('/novacaixa')
+    .post(
+      autorizar("CREATE_BOX"),
+      ValidateDTO('body', {
+        name: Joi.string().required()
           .messages({
             'eny.required': `"nome" é um campo obrigatório.`,
             'string.empty': `"nome" não deve ser vazio.`,
           }),
-
-        description:Joi.string().min(10).required()
+        description:Joi.string().required()
           .messages({
             'eny.required': `"description" é um campo obrigatório.`,
-            'string.empty': `"description" não deve ser vazio.`,       
+            'string.empty': `"description" não deve ser vazio.`
           }),
-
         price: Joi.number().required()
           .messages({
             'eny.required': `"price" é um campo obrigatório.`,
@@ -78,7 +87,7 @@ module.exports = (Router) => {
             'number.base': `"price" deve ser um número`,
           }),
       }),
-      editBoxCTRL,
+      createBoxCTRL,
     );
   
   Router
@@ -91,7 +100,7 @@ module.exports = (Router) => {
   Router
     .route('/caixas/delete/:id')
     .delete(
-      // autorizar(),
+      autorizar(),
       deleteSubscriptionCTRL,
     );
 };

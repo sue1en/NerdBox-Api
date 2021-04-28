@@ -1,31 +1,23 @@
 const userService = require('../service/user.service');
+const { users, userCaixas } = require('../models')
+
 
 module.exports = {
    authenticationCRTL: async (req, res) => {
-   
       try {
-         console.log(req.body);
-   
          const { user, password } = req.body;
-   
+
          const result = await userService.userFinder(user, password);
-   
          if (!result) {
-            return res.status(401).send({
-               message: `usuário ou senha inválidos.`
-            });
-         }
-   
+            return res.status(401).send({message: `usuário ou senha inválidos.`});
+         }; 
          var credential = await userService.createCredential(user);
-   
          return res.status(200).send(credential);
          
       } catch (error) {
          console.log(error);
-         res.status(500).send({
-            message:"ERROR!!!",
-         });
-      }
+         res.status(500).send({message:"ERROR!!!"});
+      };
    },
    
    createNewUserCTRL: async (req, res) => {
@@ -36,68 +28,68 @@ module.exports = {
          //valida se email já existe
          const emailValidation = await userService.isEmailRegistered(body.email);
          if (emailValidation){
-            return res.status(400).send({
-               message: 'Email já cadastrado.',
-            });
-         }
+            return res.status(400).send({message: 'Email já cadastrado.'});
+         };
          await userService.createUser(body);
-         return res.status(200).send({
-            message:'cadastro realizado com sucesso!'
-         });
+         var credential = await userService.createCredential(body.email);
+         return res.status(200).send(credential);
    
       } catch (error) {
          console.log(error);
-         res.status(500).send({
-            message:"ERROR!!!",
-         });
-      }
+         res.status(500).send({message:"ERROR!!!"});
+      };
    },
    
    editUserCTRL: async (req, res) => {
+      try {
+         const { body, params } = req;
+         if (Number(params.id) !== Number(req.user.id)) {
+            return res.status(400).send({ message: `Operação não permitida.`});
+         };
       
-      const { body, params } = req;
+         //verifica se email já existe
+         const emailValidation = await userService.isEmailRegistered(body.email, params.id);
+         if (emailValidation) {
+            return res.send(400).send({ message: `email já cadastrado.`})
+         };
       
-      if (Number(params.id) !== Number(req.user.id)) {
-         return res.status(400).send({
-            message: `Operação não permitida.`
-         })
-      }
-   
-      //valida se email já existe
-      const emailValidation = await userService.isEmailRegistered(body.email, params.id);
-      if (emailValidation) {
-         return res.send(400).send({
-            message: `email já cadastrado.`
-         })
-      }
-   
-      await userService.editUser(params.id, body);
-   
-      return res.status(200).send({
-         message:'Alteração realizada com sucesso.'
-      })
+         await userService.editUser(params.id, body);
+         return res.status(200).send({ message:'Alteração realizada com sucesso.'});
+
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({ message:"ERROR!!!" });
+      };
+   },
+
+   getAllUsers: async (req, res) => {
+      try {
+         if ( req.user.type !== "1" ) {
+            return res.status(401).send({message: 'Usuário não autorizado.'});
+         };
+         const Usuarios = await users.findAll({})
+         res.status(200).send(Usuarios.map(item => {
+            const {id, name, email, birth_date} = item;
+            return{
+               id,
+               name,
+               email,
+               birth_date
+            }
+         })|| []);
+
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({message:"ERROR!!!"});
+      };
    },
 
 }
 
-
-
 // const { users, userCaixas } = require('../models')
 
 // module.exports = {
-//     getAllUsers: async (req, res) => {
-//         const Usuarios = await users.findAll({})
-//         res.status(200).send(Usuarios.map(item => {
-//             const {id, name, email, birth_date} = item;
-
-//             return{
-//                 id,
-//                 name,
-//                 email,
-//                 birth_date
-//             }
-//         })|| []);
-//     },
+//     
 //     postRegisterUser: async (req,res) => {
 //         const { name, email, birth_date} = req.body
 //         const { idCaixa } = req.params

@@ -6,7 +6,9 @@ const userService = require('../service/user.service');
 const profiles = {
   '1': [
     'CREATE_BOX',
-    'EDIT_BOX'
+    'EDIT_BOX',
+    'GET_ALL_USERS',
+    'EDIT_USER',
   ],
   '2': [
     'EDIT_USER',
