@@ -2,7 +2,7 @@ const caixaCTRL = require('../../controllers/caixaCTRL');
 const { autorizar, ValidateDTO } = require('../../utils/middlewares.utils');
 const Joi = require('joi');
 
-const { getAllBoxCTRL, createBoxCTRL, getBoxesByIdNoAuthCTRL, getBoxesByIdCTRL, postRegisterSubscriptionCTRL, deleteSubscriptionCTRL, editBoxCTRL } = caixaCTRL
+const { getAllBoxCTRL, createBoxCTRL, getBoxesByIdNoAuthCTRL, getBoxesByIdCTRL, postRegisterSubscriptionCTRL, deleteSubscriptionCTRL, editBoxCTRL, deleteBoxCTRL } = caixaCTRL
 
 module.exports = (Router) => {
 
@@ -69,6 +69,10 @@ module.exports = (Router) => {
         }),
       }),
       editBoxCTRL,
+    )
+    .delete(
+      autorizar("DELETE_BOX"),
+      deleteBoxCTRL,
     );
 
   //Cria nova caixa (apenas usuário tipo 1)

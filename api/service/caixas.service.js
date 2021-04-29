@@ -79,10 +79,17 @@ const editBox = async (id, body) => {
   );
 };
 
+const deleteBox = async (id) => {
+  return await caixas.destroy({
+    where: { id:id }
+  });
+};
+
 module.exports = {
   searchBoxByName,
   createNewBox,
   editBox,
   findBoxByUserProfile,
   findBoxByIdNoAuth,
+  deleteBox
 };

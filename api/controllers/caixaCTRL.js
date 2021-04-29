@@ -152,4 +152,20 @@ module.exports = {
          res.status(500).send({message:"ERROR!!!"});
       };
    },
+
+   deleteBoxCTRL: async (req, res, next) => {
+      try{
+         if ( req.user.type !== "1" ) {
+            return res.status(401).send({ message: 'Usuário não autorizado.'})
+         };
+         const { idCaixa } = req.params;
+   
+         await caixasSevice.deleteBox(idCaixa);
+         return res.status(200).send({message:'Caixa excluída com sucesso!'});
+
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({message:"ERROR!!!"});
+      };
+   },
 };
