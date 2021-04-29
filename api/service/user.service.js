@@ -30,9 +30,7 @@ const userFinder = async (userEmail, password) => {
   return userFromDB ? true : false;
 };
 
-
 const createCredential = async (userEmail) => {
-  
   try{
     const userCredential = await users.findOne({
       where: {
@@ -55,7 +53,6 @@ const createCredential = async (userEmail) => {
       },
     };
     return credential;
-    
   } catch (error) {
     console.log(error);
   };
@@ -63,11 +60,9 @@ const createCredential = async (userEmail) => {
 
 const isEmailRegistered = async (email, id = 0) => {
   const result = await searchByEmail(email);
-
   if(id === 0) {
     return result ? true : false;
   };
-
   if (result) {
     if (result.id === id)
       return false;

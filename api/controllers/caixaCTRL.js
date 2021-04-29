@@ -1,7 +1,7 @@
 const caixasSevice = require('../service/caixas.service');
 const userSevice = require('../service/user.service');
 const subscriptionService = require ('../service/subscription.service');
-const { caixas, users, userCaixas } = require('../models');
+const { caixas } = require('../models');
 
 module.exports = {
    getAllBoxCTRL: async (req, res) => {

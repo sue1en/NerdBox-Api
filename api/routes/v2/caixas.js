@@ -111,7 +111,6 @@ module.exports = (Router) => {
     .route('/caixas/:idCaixa/assinar/:idSubscription')
     .delete(
       autorizar(),
-      rotaTeste
-      //deleteSubscriptionCTRL,
+      deleteSubscriptionCTRL,
     );
 };
