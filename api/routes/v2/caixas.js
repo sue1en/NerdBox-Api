@@ -4,9 +4,6 @@ const Joi = require('joi');
 
 const { getAllBoxCTRL, createBoxCTRL, getBoxesByIdNoAuthCTRL, getBoxesByIdCTRL, postRegisterSubscriptionCTRL, deleteSubscriptionCTRL, editBoxCTRL } = caixaCTRL
 
-const testeCTRL = require('../../controllers/testeCTRL')
-const { rotaTeste } = testeCTRL
-
 module.exports = (Router) => {
 
   //Retorna caixas existentes
