@@ -13,6 +13,55 @@ const findBoxByIdNoAuth = async (id) =>{
   });
 };
 
+// const findBoxByUserProfile = async (id, userId, userType) => {
+//   const resultFromDB = await caixas.findOne({
+//     where: { id: id },
+//     include:[{
+//       model: userCaixas,
+//       as: 'assinantes',
+//       include: [{
+//         model: users,
+//         as: 'user',
+//       }],
+//     }],
+//   });
+
+//   let subscriptionFilter = resultFromDB.assinantes;
+//   let result = [];
+
+//   if (Number(userType) === 1) {
+
+//     const subscriptionDetail = subscriptionFilter.map((itemSubscription) => {
+//       return {
+//         id: itemSubscription.id,
+//         member: {
+//           id: itemSubscription.user.id,
+//           name: itemSubscription.user.name,
+//           email:itemSubscription.user.email,
+//           birth_date: itemSubscription.user.birth_date,
+//         },
+//       };
+//     });
+//     result = {
+//       qtd_subs: subscriptionFilter.length,
+//       assinantes: subscriptionDetail,
+//     };
+//   } else {
+//     const memberDatail = subscriptionFilter.filter((itemFilter) => (Number(itemFilter.id_user) === Number(userId)));
+//     result = {
+//       member: memberDatail.length ? true : false,
+//     };
+//   };
+
+//   return {
+//     id: resultFromDB.id,
+//     name: resultFromDB.name,
+//     description: resultFromDB.description,
+//     price: resultFromDB.price,
+//     result,
+//   };
+// };
+
 const findBoxByUserProfile = async (id, userId, userType) => {
   const resultFromDB = await caixas.findOne({
     where: { id: id },
@@ -27,35 +76,42 @@ const findBoxByUserProfile = async (id, userId, userType) => {
   });
 
   let subscriptionFilter = resultFromDB.assinantes;
-  
+  // let result = [];
+
   if (Number(userType) === 1) {
+
     const subscriptionDetail = subscriptionFilter.map((itemSubscription) => {
       return {
         id: itemSubscription.id,
         member: {
           id: itemSubscription.user.id,
           name: itemSubscription.user.name,
+          email:itemSubscription.user.email,
+          birth_date: itemSubscription.user.birth_date,
         },
       };
     });
-    result = {
+    
+    return {
+      id: resultFromDB.id,
+      name: resultFromDB.name,
+      description: resultFromDB.description,
+      price: resultFromDB.price,
       qtd_subs: subscriptionFilter.length,
       assinantes: subscriptionDetail,
     };
+
   } else {
     const memberDatail = subscriptionFilter.filter((itemFilter) => (Number(itemFilter.id_user) === Number(userId)));
-    result = {
-      membro: memberDatail.length ? true : false,
+    return {
+      id: resultFromDB.id,
+      name: resultFromDB.name,
+      description: resultFromDB.description,
+      price: resultFromDB.price,
+      member: memberDatail.length ? true : false,
     };
   };
 
-  return {
-    id: resultFromDB.id,
-    name: resultFromDB.name,
-    description: resultFromDB.description,
-    price: resultFromDB.price,
-    result
-  };
 };
 
 const createNewBox = async (body) => {
