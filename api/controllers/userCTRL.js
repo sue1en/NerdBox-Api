@@ -42,6 +42,7 @@ module.exports = {
    authenticationCRTL: async (req, res) => {
       try {
          const { user, password } = req.body;
+        
          const result = await userService.userFinder(user, password);
          if (!result) {
             return res.status(401).send({message: `usuário ou senha inválidos.`});

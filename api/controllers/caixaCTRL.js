@@ -72,16 +72,10 @@ module.exports = {
 module.exports = {
    getAllBoxCTRL: async (req, res) => {
       try { 
-         const existentsBox = await caixas.findAll({})
-         res.status(200).send(existentsBox.map(item => {
-            const {id, name, description, price} = item;
-            return{
-               id,
-               name,
-               description,
-               price
-            }
-         }) || []);
+
+         const result = await caixasSevice.findAllBoxes();
+
+         res.status(200).send(result);
 
       } catch (error) {
          console.log(error);
@@ -105,8 +99,8 @@ module.exports = {
    getBoxesByIdCTRL: async (req, res) => { 
       try{
          const { params, user } = req
-         const resultFromService = await caixasSevice.findBoxByUserProfile(params.idCaixa, user.id, user.type);
-         return res.status(200).send(resultFromService);
+         const result = await caixasSevice.findBoxByUserProfile(params.idCaixa, user.id, user.type);
+         return res.status(200).send(result);
 
       } catch (error) {
          console.log(error);
@@ -131,8 +125,9 @@ module.exports = {
          };
    
          //realiza a inscrição
-         await subscriptionService.addUserSubscription( idCaixa, idUser);
-         return res.status(200).send({mensage: 'Inscrição realizada com sucesso!'});
+         const resultSubs = await subscriptionService.addUserSubscription( idCaixa, idUser);
+
+         return res.status(200).send({idSubscription:resultSubs.dataValues.id});
    
       } catch (error) {
          console.log(error);

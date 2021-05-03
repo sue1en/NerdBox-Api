@@ -41,7 +41,6 @@ const userIdSubscriptionValidation = async (idSubscription, idUser) => {
   return resultFromDB.id_user === idUser ? true : false;
 };
 
-
 const removeSubscription = async (idSubscription) => {
   return await userCaixas.destroy({
     where: { id: idSubscription }
