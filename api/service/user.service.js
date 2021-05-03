@@ -133,7 +133,7 @@ const findAllUsers = async () => {
       email,
       type,
       birth_date,
-      assinantes: assinantes.reduce((acc, item) => {
+      assinatura: assinantes.reduce((acc, item) => {
         const { id, caixa } = item;
         const newItem = { id, caixa: caixa.name };
         return [...acc, newItem ]
