@@ -9,10 +9,11 @@ const profiles = {
     'EDIT_BOX',
     'GET_ALL_USERS',
     'EDIT_USER',
-    "DELETE_BOX",
+    'DELETE_BOX',
   ],
   '2': [
     'EDIT_USER',
+    'DELETE_SUBSCRIPTION'
   ]
 }
 

@@ -71,12 +71,9 @@ module.exports = {
 //---->>> V2 <<<----
 module.exports = {
    getAllBoxCTRL: async (req, res) => {
-      try { 
-
+      try {
          const result = await caixasSevice.findAllBoxes();
-
          res.status(200).send(result);
-
       } catch (error) {
          console.log(error);
          res.status(500).send({ message:"ERROR!!!"});
@@ -85,11 +82,9 @@ module.exports = {
 
    getBoxesByIdNoAuthCTRL: async (req, res) => {
       try{ 
-         const { params } = req
-         ;
+         const { params } = req;
          const result = await caixasSevice.findBoxByIdNoAuth(params.idCaixa);
          return res.status(200).send(result);
-
       } catch (error) {
          console.log(error);
          res.status(500).send({message:"ERROR!!!" });
@@ -101,7 +96,6 @@ module.exports = {
          const { params, user } = req
          const result = await caixasSevice.findBoxByUserProfile(params.idCaixa, user.id, user.type);
          return res.status(200).send(result);
-
       } catch (error) {
          console.log(error);
          res.status(500).send({message:"ERROR!!!" });
@@ -112,23 +106,22 @@ module.exports = {
       try { 
          const { idCaixa } = req.params;
          const idUser = req.user.id;
-   
+
          //valida se caixa existe
          const boxValidationResult = await subscriptionService.isBoxAvailable(idCaixa);
-         if (!boxValidationResult)
-         return res.status(422).send({mensage: 'Produto informado não existe!'});
-   
+         if (!boxValidationResult){
+            return res.status(422).send({mensage: 'Produto informado não existe!'});
+         }
+
          // Valida se usuário já está inscrito nessa caixa
          const userValidationResult = await subscriptionService.isUserSubscrited( idCaixa, idUser);
          if (userValidationResult) {
            return res.status(400).send({ message: 'Esse usuário já está inscrito nessa caixa!'});
          };
-   
+
          //realiza a inscrição
          const resultSubs = await subscriptionService.addUserSubscription( idCaixa, idUser);
-
          return res.status(200).send({idSubscription:resultSubs.dataValues.id});
-   
       } catch (error) {
          console.log(error);
          res.status(500).send({ message:"ERROR!!!"});
@@ -155,11 +148,11 @@ module.exports = {
          if (!userValidationResult) {
            return res.status(400).send({ message: 'Operação não pode ser realizada!'});
          };
-   
+
          //remove a inscrição
          await subscriptionService.removeSubscription(idSubscription);
          return res.status(200).send({mensage: 'Inscrição cancelada com sucesso!'});
-   
+
       } catch (error) {
          console.log(error);
          res.status(500).send({ message:"ERROR!!!"});
@@ -168,11 +161,9 @@ module.exports = {
 
    createBoxCTRL: async (req, res, next) => {
       try{
-
          if ( req.user.type !== "1" ) {
             return res.status(401).send({ message: 'Usuário não autorizado.'})
          };
-         
          const { name } = req.body;
 
          //verifica se produto já é cadastrado com esse nome
@@ -180,10 +171,8 @@ module.exports = {
          if (boxNameValidation){
             return res.status(400).send({ message: 'Já existe uma caixa com esse nome.'});
          };
-   
          await caixasSevice.createNewBox(req.body);
          return res.status(200).send({ message:'Cadastro realizado com sucesso.'});
-
       } catch (error) {
          console.log(error);
          res.status(500).send({ message:"ERROR!!!"});
@@ -195,7 +184,6 @@ module.exports = {
          if ( req.user.type !== "1" ) {
             return res.status(401).send({ message: 'Usuário não autorizado.'})
          };
-
          const { idCaixa } = req.params;
          
          //verifica se produto já é cadastrado com esse nome

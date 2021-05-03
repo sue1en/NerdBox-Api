@@ -2,7 +2,7 @@ const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 const hashSecret = process.env.CRYPTO_KEY;
 
-const { users } = require('../models');
+const { users, userCaixas, caixas } = require('../models');
 
 const createHash = (password) => {
   return md5(password + hashSecret);
@@ -18,7 +18,7 @@ const searchByEmail = async (email) => {
   return userFromDB;
 };
 
-//locoliza usuário por email e senha
+//locoliza usuário por email e senha ao fazer login
 const userFinder = async (userEmail, password) => {
   const userFromDB = await users.findOne({
     where: {
@@ -26,10 +26,10 @@ const userFinder = async (userEmail, password) => {
       password: createHash(password),
     },
   });
-  console.log(userFromDB);
   return userFromDB ? true : false;
 };
 
+//Cria credencial
 const createCredential = async (userEmail) => {
   try{
     const userCredential = await users.findOne({
@@ -97,11 +97,58 @@ const editUser = async (id, body) => {
   );
 };
 
+
+
+const usersList = async (type) => {
+  let where = {};
+  if (type) {
+    where = {
+      type
+    }
+  };
+
+  const resultFromDB = await users.findAll({
+    where,
+    include: [{
+      model: userCaixas,
+      as: 'assinantes',
+      include: [{
+        model: caixas,
+        as: 'caixa',
+      }],
+    }],
+  });
+
+  return resultFromDB;
+};
+
+const findAllUsers = async () => {
+  const resultFromDB = await usersList('2');
+
+  return resultFromDB.map(item => {
+    const { id, name, email, birth_date, type, assinantes } = item;
+    return {
+      id,
+      name,
+      email,
+      type,
+      birth_date,
+      assinantes: assinantes.reduce((acc, item) => {
+        const { id, caixa } = item;
+        const newItem = { id, caixa: caixa.name };
+        return [...acc, newItem ]
+      }, []),
+    }
+  });
+};
+
+
 module.exports = { 
   userFinder,
   createCredential,
   isEmailRegistered,
   createUser,
   searchByEmail,
-  editUser
+  editUser,
+  findAllUsers
 };

@@ -111,7 +111,21 @@ module.exports = (Router) => {
   Router
     .route('/caixas/:idCaixa/assinar/:idSubscription')
     .delete(
-      autorizar(),
+      autorizar("DELETE_SUBSCRIPTION"),
+      ValidateDTO('params', {
+        idCaixa: Joi.number().integer().required()
+          .messages({
+            'any.required': `"id" é um campo obrigatório`,
+            'number.base': `"id" deve ser um número`,
+            'number.integer': `"id" deve ser um número válido`,
+          }),
+        idSubscription: Joi.number().integer().required()
+          .messages({
+            'any.required': `"id" é um campo obrigatório`,
+            'number.base': `"id" deve ser um número`,
+            'number.integer': `"id" deve ser um número válido`,
+          })
+      }),
       deleteSubscriptionCTRL,
     );
 };
