@@ -76,14 +76,18 @@ const findBoxByUserProfile = async (id, userId, userType) => {
     };
 
   } else {
-    const memberDatail = subscriptionFilter.filter((itemFilter) => (Number(itemFilter.id_user) === Number(userId)));
+    const memberDetail = subscriptionFilter.filter((itemFilter) => 
+      (Number(itemFilter.id_user) === Number(userId)));
+
+    const subsId = memberDetail[0].dataValues.id;
 
     return {
       id: resultFromDB.id,
       name: resultFromDB.name,
       description: resultFromDB.description,
       price: resultFromDB.price,
-      member: memberDatail.length ? true : false,
+      member: memberDetail.length ? true : false,
+      subs_id:subsId,
     };
   };
 };
