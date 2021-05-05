@@ -2,7 +2,7 @@ const userCTRL = require('../../controllers/userCTRL');
 const { ValidateDTO, autorizar } = require('../../utils/middlewares.utils');
 const Joi = require('joi').extend(require('@joi/date'));
 
-const { authenticationCRTL, getAllUsers, createNewUserCTRL, editUserCTRL } = userCTRL
+const { authenticationCRTL, getAllUsers, createNewUserCTRL, editUserCTRL, getUserById } = userCTRL
 
 module.exports = (Router) => {
 
@@ -28,6 +28,7 @@ module.exports = (Router) => {
   Router
     .route('/users')
     .get(
+      autorizar(),
       autorizar("GET_ALL_USERS"),
       getAllUsers
     )
@@ -63,6 +64,13 @@ module.exports = (Router) => {
       }),
       createNewUserCTRL
     );
+
+  Router
+    .route('/user')
+    .get(
+      autorizar(),
+      getUserById
+    )
 
   //Edita usuário
   Router

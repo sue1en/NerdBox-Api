@@ -7,24 +7,42 @@ const searchBoxByName = async (name) => {
   return resultFromDB ? true : false;
 };
 
-const findAllBoxes = async (id) => {
+const findAllBoxes = async (userId, userType) => {
   const resultFromDB = await caixas.findAll({
     include:[{
       model: userCaixas,
       as: 'assinantes'
     }],
   });
+  let result = [];
 
-  return resultFromDB.map(item => {
-    const { id, name, description, price, assinantes } = item;
+  if (Number(userType) === 2) {
+    result = resultFromDB.map((item) => {
+      const { id, name, description, price, assinantes } = item;
+      const filterResult = assinantes.filter((itemFilter) => {
+        return Number(itemFilter.id_user) === Number(userId)
+      })
       return{
         id,
         name,
         description,
         price,
-        qtd_subs:assinantes.length,
+        member:filterResult.length > 0 ? true : false,
       };
-  });
+    })
+  } else {
+    result = resultFromDB.map(item => {
+      const { id, name, description, price, assinantes } = item;
+        return{
+          id,
+          name,
+          description,
+          price,
+          qtd_subs:assinantes.length,
+        };
+    });
+  }
+  return result;
 };
 
 const findBoxByIdNoAuth = async (id) =>{
@@ -50,7 +68,7 @@ const findBoxByUserProfile = async (id, userId, userType) => {
 
   if (Number(userType) === 2) {
     subscriptionFilter = subscriptionFilter.filter(item => item.id_user === userId);
-  }
+  };
 
   const subscriptionDetail = subscriptionFilter.map((itemSubscription) => {
     return {
@@ -63,7 +81,7 @@ const findBoxByUserProfile = async (id, userId, userType) => {
       },
     };
   });
-    
+  
   return {
     id: resultFromDB.id,
     name: resultFromDB.name,
@@ -74,75 +92,6 @@ const findBoxByUserProfile = async (id, userId, userType) => {
   };
 };
 
-// const findBoxByUserProfile = async (id, userId, userType) => {
-//   const resultFromDB = await caixas.findOne({
-//     where: { id: id },
-//     include:[{
-//       model: userCaixas,
-//       as: 'assinantes',
-//       include: [{
-//         model: users,
-//         as: 'user',
-//       }],
-//     }],
-//   });
-
-//   let subscriptionFilter = resultFromDB.assinantes;
-//   let result = []
-
-//   if (Number(userType) === 2) {
-
-//     if (Number(usuarioTipo) === 2) {
-//       subscriptionFilter = subscriptionFilter.filter(item => item.id_user === userId);
-//     }
-  
-
-
-//     const memberDetail = subscriptionFilter.filter((itemFilter) => 
-//       (Number(itemFilter.id_user) === Number(userId)));
-//     var subsId = memberDetail[0].dataValues.id;
-
-//     if(memberDetail){
-
-//     }
-
-
-//       console.log("##############################")
-//       console.log(item)
-
-//     return {
-//       id: resultFromDB.id,
-//       name: resultFromDB.name,
-//       description: resultFromDB.description,
-//       price: resultFromDB.price,
-//       // member: memberDetail.length ? true : false,
-//       // subs_id:subsId,
-//     };
-
-//   } else {
-//     const subscriptionDetail = subscriptionFilter.map((itemSubscription) => {
-//       return {
-//         id: itemSubscription.id,
-//         member: {
-//           id: itemSubscription.user.id,
-//           name: itemSubscription.user.name,
-//           email:itemSubscription.user.email,
-//           birth_date: itemSubscription.user.birth_date,
-//         },
-//       };
-//     });
-    
-//     return {
-//       id: resultFromDB.id,
-//       name: resultFromDB.name,
-//       description: resultFromDB.description,
-//       price: resultFromDB.price,
-//       qtd_subs: subscriptionFilter.length,
-//       assinantes: subscriptionDetail,
-//     };
-//   };
-// };
-
 const createNewBox = async (body) => {
   return await caixas.create({
     name: body.name,
@@ -150,14 +99,14 @@ const createNewBox = async (body) => {
     price: body.price,
   });
 };
-  
+
 const editBox = async (id, body) => {
   const editBoxModel = {
     name: body.name,
     description: body.description,
     price: body.price,
   };
-  
+
   return caixas.update(
     {...editBoxModel},
     {where: { id:id }}

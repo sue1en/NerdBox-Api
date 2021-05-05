@@ -72,6 +72,7 @@ module.exports = {
 module.exports = {
    getAllBoxCTRL: async (req, res) => {
       try {
+         // const { user } = req
          const result = await caixasSevice.findAllBoxes();
          res.status(200).send(result);
       } catch (error) {

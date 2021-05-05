@@ -10,6 +10,7 @@ module.exports = (Router) => {
   Router
     .route('/caixas')
     .get(
+      // autorizar(),
       getAllBoxCTRL,
     );
 

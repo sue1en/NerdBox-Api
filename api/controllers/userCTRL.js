@@ -8,7 +8,6 @@ module.exports = {
         const Usuarios = await users.findAll({})
         res.status(200).send(Usuarios.map(item => {
             const {id, name, email, birth_date} = item;
-
             return{
                 id,
                 name,
@@ -34,7 +33,6 @@ module.exports = {
         return res.status(400).send({Error: "Já exite um usuario criado com esse email!"})
     }
 }
-
 */
 
 //---->>> V2 <<<----
@@ -92,12 +90,26 @@ module.exports = {
       };
    },
 
+   getUserById: async (req, res) => {
+      try {
+         // if ( req.user.type !== "1" ) {
+         //    return res.status(401).send({message: 'Usuário não autorizado.'});
+         // };
+         const { user } = req
+         const Usuarios = await userService.findUserById( user.id );
+         res.status(200).send(Usuarios);
+      } catch (error) {
+         console.log(error);
+         res.status(500).send({message:"ERROR!!!"});
+      };
+   },
    getAllUsers: async (req, res) => {
       try {
          if ( req.user.type !== "1" ) {
             return res.status(401).send({message: 'Usuário não autorizado.'});
          };
-         const Usuarios = await userService.findAllUsers();
+         const { user } = req
+         const Usuarios = await userService.findAllUsers( user.id, user.type );
          res.status(200).send(Usuarios);
       } catch (error) {
          console.log(error);
