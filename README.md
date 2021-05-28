@@ -10,8 +10,8 @@
         * [X] Mysql
 
 Desenvolvedores:
-- Felipe Siqueira [GitLab](https://gitlab.com/fsiq)
-- Suelen Batista [GitLab](https://gitlab.com/suelen.batista)
+- Felipe Siqueira [GitHub](https://github.com/fsiq-dev)
+- Suelen Batista [GitHub](https://github.com/sue1en)
 
 ```console
 $ yarn install      # instala as dependências
