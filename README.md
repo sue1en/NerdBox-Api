@@ -11,7 +11,7 @@
 
 Desenvolvedores:
 - Felipe Siqueira [GitLab](https://gitlab.com/fsiq)
-- Suelen Batista - Front-End [GitLab](https://gitlab.com/suelen.batista)
+- Suelen Batista [GitLab](https://gitlab.com/suelen.batista)
 
 ```console
 $ yarn install      # instala as dependências
